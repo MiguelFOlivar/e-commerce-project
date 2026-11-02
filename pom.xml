@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://apache.org"
+         xmlns:xsi="http://w3.org"
+         xsi:schemaLocation="http://apache.org http://apache.org">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tienda</groupId>
+    <artifactId>ecommerce-parent</artifactId>
+    <version>1.0.0</version>
+    <packaging>pom</packaging> <!-- IMPORTANTE: Indica que es un contenedor -->
+
+    <modules>
+        <module>products</module> <!-- Aquí registramos tu primer microservicio -->
+    </modules>
+</project>
+
