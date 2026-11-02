@@ -21,6 +21,7 @@
 ![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-Connector-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
 ![JPA Hibernate](https://img.shields.io/badge/JPA-Hibernate-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-Entorno%20de%20Desarrollo-000000?style=for-the-badge&logo=intellijidea&logoColor=white)
 ![Lombok](https://img.shields.io/badge/Lombok-Enabled-bd93f9?style=for-the-badge)
 
 ### Tecnologías planeadas (roadmap)
@@ -29,6 +30,7 @@
 ![JWT](https://img.shields.io/badge/JWT-Planificado-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Planificado-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![OpenAPI](https://img.shields.io/badge/OpenAPI-Planificado-6BA539?style=for-the-badge&logo=openapiinitiative&logoColor=white)
+![Flyway](https://img.shields.io/badge/Flyway-Evaluaci%C3%B3n%20futura-CC0200?style=for-the-badge&logo=flyway&logoColor=white)
 
 ---
 
@@ -39,7 +41,10 @@
 - [🧩 Estado del proyecto](#-estado-del-proyecto)
 - [📁 Estructura del repositorio](#-estructura-del-repositorio)
 - [⚙️ Configuración por entorno (properties)](#️-configuración-por-entorno-properties)
-- [🚀 Ejecución rápida](#-ejecución-rápida)
+- [🌱 Guía para principiantes](#-guía-para-principiantes)
+- [🔐 Variables de entorno paso a paso](#-variables-de-entorno-paso-a-paso)
+- [🚀 Ejecución en terminal (dev/prod)](#-ejecución-en-terminal-devprod)
+- [💡 Ejecución con IntelliJ IDEA](#-ejecución-con-intellij-idea)
 - [🧪 Pruebas](#-pruebas)
 - [🗺️ Roadmap funcional](#️-roadmap-funcional)
 - [🔄 Mantenimiento del README](#-mantenimiento-del-readme)
@@ -117,9 +122,21 @@ Configuración enfocada en seguridad y estabilidad:
 - JPA con `ddl-auto=none` para evitar cambios automáticos de esquema.
 - Logs SQL desactivados.
 
-### Variables de entorno recomendadas
+## 🌱 Guía para principiantes
 
-Para despliegue (especialmente `prod`) define al menos:
+Si no tienes experiencia previa con Spring Boot o variables de entorno, sigue esta ruta:
+
+1. Instala **Java 21**, **Maven** y **MySQL**.
+2. Clona el repositorio y entra a la carpeta `products`.
+3. Crea/valida una base de datos llamada `db_products` en MySQL.
+4. Ejecuta primero el perfil `dev` (más flexible para desarrollo).
+5. Cuando quieras simular despliegue, ejecuta el perfil `prod` con variables de entorno explícitas.
+
+## 🔐 Variables de entorno paso a paso
+
+Las variables de entorno son valores externos que la app lee al iniciar (por ejemplo usuario/contraseña de DB), evitando hardcodear credenciales.
+
+Variables que usarás en este proyecto:
 
 - `DB_HOST`
 - `DB_PORT`
@@ -127,7 +144,29 @@ Para despliegue (especialmente `prod`) define al menos:
 - `DB_USER`
 - `DB_PASSWORD`
 
-## 🚀 Ejecución rápida
+### Linux / macOS (terminal bash/zsh)
+
+```bash
+export DB_HOST=localhost
+export DB_PORT=3306
+export DB_NAME=db_products
+export DB_USER=root
+export DB_PASSWORD=root
+```
+
+### Windows PowerShell
+
+```powershell
+$env:DB_HOST="localhost"
+$env:DB_PORT="3306"
+$env:DB_NAME="db_products"
+$env:DB_USER="root"
+$env:DB_PASSWORD="root"
+```
+
+> Nota: estas variables viven solo durante esa sesión de terminal. Si cierras la consola, debes volver a definirlas.
+
+## 🚀 Ejecución en terminal (dev/prod)
 
 ### Prerrequisitos
 
@@ -143,28 +182,49 @@ git clone https://github.com/MiguelFOlivar/e-commerce-project.git
 cd e-commerce-project
 ```
 
-### 2) Ejecutar en entorno de desarrollo (`dev`)
+### 2) Ejecutar en desarrollo (`dev`)
 
-`dev` es el perfil por defecto, pero puedes declararlo explícitamente:
+`dev` es el perfil por defecto. Puedes correrlo explícitamente así:
 
 ```bash
 cd products
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-### 3) Ejecutar en entorno de producción (`prod`)
+Resultado esperado:
 
-Define variables y levanta el servicio con perfil productivo:
+- Servicio arriba en `http://localhost:8081`
+- Logs SQL visibles para depuración
+
+### 3) Ejecutar en producción (`prod`)
+
+1. Define variables de entorno (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`).
+2. Ejecuta con perfil `prod`:
 
 ```bash
 cd products
-export DB_HOST=localhost
-export DB_PORT=3306
-export DB_NAME=db_products
-export DB_USER=tu_usuario
-export DB_PASSWORD=tu_password
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
 ```
+
+Resultado esperado:
+
+- Servicio arriba en `http://localhost:8080`
+- Sin creación/alteración automática de tablas (`ddl-auto=none`)
+- Logs SQL desactivados
+
+## 💡 Ejecución con IntelliJ IDEA
+
+El proyecto se desarrolla en **IntelliJ IDEA**. Pasos recomendados:
+
+1. `File` → `Open` y selecciona `/home/runner/work/e-commerce-project/e-commerce-project`.
+2. Espera sincronización de Maven.
+3. En módulo `products`, abre la clase principal de Spring Boot y crea una configuración `Run`.
+4. En **Active profiles**, usa:
+   - `dev` para desarrollo local.
+   - `prod` para validar comportamiento productivo.
+5. Para `prod`, en la configuración agrega variables en **Environment variables**:
+   - `DB_HOST=localhost;DB_PORT=3306;DB_NAME=db_products;DB_USER=tu_usuario;DB_PASSWORD=tu_password`
+6. Ejecuta con el botón **Run**.
 
 ## 🧪 Pruebas
 
@@ -183,6 +243,7 @@ mvn test
 - [ ] Microservicio `users`.
 - [ ] Microservicio `orders`.
 - [ ] Seguridad con JWT/Spring Security.
+- [ ] Migraciones con Flyway (evaluación e integración).
 - [ ] Contenerización con Docker.
 
 ## 🔄 Mantenimiento del README
